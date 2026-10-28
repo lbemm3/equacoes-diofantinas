@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Equações Diofantinas em ℤ[i]</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:linear-gradient(160deg,#0a0812 0%,#1a1040 50%,#0d0d1f 100%);color:#f9fafb;font-family:'Inter','Segoe UI',sans-serif;padding:16px}
+.hdr{text-align:center;padding:16px 0 12px}
+.hdr-sub{font-size:10px;letter-spacing:3px;color:#94a3b8;margin-bottom:6px;font-weight:700}
+h1{font-size:22px;font-weight:900;background:linear-gradient(90deg,#f472b6,#818cf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-tag{color:#94a3b8;font-size:12px;margin:5px 0 10px}
+.art-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#a5b4fc;text-decoration:none;background:rgba(129,140,248,.12);padding:5px 14px;border-radius:20px;border:1px solid rgba(129,140,248,.35);font-weight:700}
+.hdr-btns{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.mode-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;border:1px solid;cursor:pointer;transition:all .2s;background:none}
+.btn-explain{border-color:rgba(251,191,36,.4);color:#fde68a}
+.btn-explain.on{background:rgba(251,191,36,.2)}
+.btn-export{border-color:rgba(52,211,153,.4);color:#6ee7b7}
+.btn-export:hover{background:rgba(52,211,153,.15)}
+.presets{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;justify-content:center}
+.preset-btn{padding:5px 12px;border-radius:20px;cursor:pointer;background:rgba(129,140,248,.10);border:1px solid rgba(129,140,248,.30);color:#c4b5fd;font-size:11px;font-weight:700}
+.preset-btn:hover{background:rgba(129,140,248,.2)}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:80px;padding:10px 4px;border-radius:12px;border:none;cursor:pointer;font-weight:700;font-size:11px;transition:all .2s;background:rgba(255,255,255,.06);color:#94a3b8}
+.tab-btn.on{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,.35)}
+.card{background:rgba(255,255,255,.03);border-radius:16px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,.08)}
+.explain-box{background:rgba(251,191,36,.06);border-radius:10px;padding:12px 16px;margin-bottom:12px;border-left:3px solid rgba(251,191,36,.5);font-size:12px;color:#e2e8f0;line-height:1.85}
+.explain-box strong{color:#fde68a}
+.sec{font-size:11px;letter-spacing:2px;font-weight:700;margin-bottom:14px}
+.cinput{margin-bottom:14px}
+.cinput-lbl{font-size:13px;font-weight:800;margin-bottom:6px}
+.cinput-note{color:#94a3b8;font-weight:400;font-size:12px;margin-left:6px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input[type=number]{width:80px;padding:7px 10px;border-radius:8px;border:2px solid rgba(255,255,255,.15);font-size:14px;background:#13111e;color:#f9fafb;outline:none;-webkit-appearance:none;-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.chip{background:rgba(255,255,255,.06);border-radius:12px;padding:10px 18px;display:inline-flex;flex-direction:column;gap:2px;min-width:80px}
+.chip.sm{padding:8px 14px}
+.chip-lbl{font-size:10px;font-weight:800;letter-spacing:1px}
+.chip-val{font-size:20px;font-weight:900;color:#f9fafb}
+.chip.sm .chip-val{font-size:15px}
+.verif{font-size:12px;color:#e2e8f0;padding:9px 13px;background:rgba(255,255,255,.05);border-radius:8px;border:1px solid rgba(255,255,255,.09);margin-top:6px;line-height:1.7}
+.tbl-wrap{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;font-size:12px;min-width:100%}
+thead th{padding:8px 14px;text-align:center;background:rgba(99,67,220,.3);color:#e0d4ff;font-weight:700;border-bottom:2px solid rgba(99,67,220,.5)}
+tbody td{padding:7px 14px;text-align:center;font-weight:600;border-bottom:1px solid rgba(255,255,255,.06)}
+tbody tr:nth-child(even){background:rgba(255,255,255,.05)}
+tbody tr:nth-child(odd){background:rgba(255,255,255,.02)}
+.step{border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.step-y{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2)}
+.step-p{background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.25)}
+.step-lbl{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:10px}
+.step-body{font-size:13px;color:#e2e8f0;line-height:2.1}
+.variants-box{border-radius:12px;padding:14px;margin-top:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1)}
+.int-box{border-radius:12px;padding:14px;margin-top:12px}
+.int-found{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.25)}
+.int-none{background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.2)}
+.sol-box{font-size:13px;background:rgba(255,255,255,.04);border-radius:8px;padding:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,.08)}
+.sol-sec{color:#94a3b8;font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:10px}
+.z-box{background:rgba(79,70,229,.09);border-radius:12px;padding:16px;border:1px solid rgba(79,70,229,.35)}
+.ok-box{border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px;font-weight:700}
+.ok-g{background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.25)}
+.ok-r{background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.25);color:#fca5a5}
+.eq-disp{font-size:13px;color:#e2e8f0;margin-bottom:14px;font-weight:500;background:rgba(255,255,255,.05);border-radius:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.08)}
+.tog-btn{background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.4);border-radius:8px;color:#c4b5fd;padding:4px 12px;cursor:pointer;font-size:11px;font-weight:700}
+.var-btn{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:8px;color:#fde68a;padding:4px 12px;cursor:pointer;font-size:11px;font-weight:700}
+.met-sec{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.met-block{border-radius:10px;padding:13px 15px;margin-bottom:10px;font-size:12px;color:#e2e8f0;line-height:2}
+.met-formula{background:rgba(251,191,36,.08);border-radius:10px;padding:13px;border:1px solid rgba(251,191,36,.2);font-size:13px;color:#fde68a;text-align:center;margin:10px 0}
+.footer{text-align:center;color:#475569;font-size:10px;padding:4px 0 12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-sub">TEORIA DOS NÚMEROS</div>
+  <h1>Equações Diofantinas em ℤ[i]</h1>
+  <p class="hdr-tag">Algoritmo Euclidiano · Bezout · Soluções Completas</p>
+  <a class="art-link" href="https://periodicos.ifrs.edu.br/index.php/REMAT/article/view/4150" target="_blank" rel="noopener noreferrer">📄 Artigo base · REMAT (IFRS)</a>
+  <div class="hdr-btns">
+    <button class="mode-btn btn-explain" id="btn-explain" onclick="toggleExplained()">📖 Modo Explicado</button>
+    <button class="mode-btn btn-export"  onclick="exportPDF()">📥 Exportar PDF</button>
+  </div>
+</div>
+
+<div class="presets" id="presets"></div>
+
+<div class="tabs">
+  <button class="tab-btn on" onclick="setTab(0)">🔢 MDC + Bezout</button>
+  <button class="tab-btn"    onclick="setTab(1)">⚡ Equação Diofantina</button>
+  <button class="tab-btn"    onclick="setTab(2)">➗ Divisão em ℤ[i]</button>
+  <button class="tab-btn"    onclick="setTab(3)">📚 Metodologia</button>
+</div>
+
+<div id="app"></div>
+<div class="footer">Baseado nos algoritmos do artigo · Equações Diofantinas em ℤ[i] · REMAT 2021</div>
+
+<script>
+// ══════════════════ MATEMÁTICA ══════════════════
+const C=(re=0,im=0)=>({re:+re,im:+im});
+const cadd=(a,b)=>C(a.re+b.re,a.im+b.im);
+const csub=(a,b)=>C(a.re-b.re,a.im-b.im);
+const cmul=(a,b)=>C(a.re*b.re-a.im*b.im,a.re*b.im+a.im*b.re);
+const cneg=a=>C(-a.re,-a.im);
+const cz=a=>a.re===0&&a.im===0;
+const cn2=a=>a.re*a.re+a.im*a.im;
+const ceq=(a,b)=>a&&b&&a.re===b.re&&a.im===b.im;
+
+function cstr(a,p=false){
+  if(!a)return'—';
+  const{re,im}=a;
+  if(cz(a))return'0';
+  let s;
+  if(im===0)s=`${re}`;
+  else if(re===0)s=im===1?'i':im===-1?'-i':`${im}i`;
+  else{const ip=im===1?'+i':im===-1?'-i':im>0?`+${im}i`:`${im}i`;s=`${re}${ip}`;}
+  return p&&re!==0&&im!==0?`(${s})`:s;
+}
+
+function gdiv(z1,z2){
+  const n=cn2(z2);if(!n)return null;
+  const α=(z1.re*z2.re+z1.im*z2.im)/n;
+  const β=(z1.im*z2.re-z1.re*z2.im)/n;
+  const m=Math.round(α),nn=Math.round(β);
+  const q=C(m,nn),r=csub(z1,cmul(z2,q));
+  return{α,β,m,n:nn,q,r,nz2:n};
+}
+
+function gdivExact(a,b){
+  const n=cn2(b);if(!n)return null;
+  const re=(a.re*b.re+a.im*b.im)/n;
+  const im=(a.im*b.re-a.re*b.im)/n;
+  if(Math.abs(re-Math.round(re))>1e-9||Math.abs(im-Math.round(im))>1e-9)return null;
+  return C(Math.round(re),Math.round(im));
+}
+
+function euclidBezout(a,b){
+  if(cz(a)&&cz(b))return{gcd:C(0),s:C(0),t:C(0),rows:[]};
+  if(cz(b))return{gcd:a,s:C(1),t:C(0),rows:[
+    {k:0,r:a,q:null,s:C(1),t:C(0),last:false},
+    {k:1,r:C(0),q:null,s:C(0),t:C(1),last:true}]};
+  let r=[a,b],sv=[C(1),C(0)],tv=[C(0),C(1)],qs=[null,null],i=1;
+  while(!cz(r[i])&&i<60){
+    const d=gdiv(r[i-1],r[i]);if(!d)break;
+    qs[i]=d.q;r.push(d.r);qs.push(null);
+    const nq=cneg(d.q);
+    sv.push(cadd(sv[i-1],cmul(sv[i],nq)));
+    tv.push(cadd(tv[i-1],cmul(tv[i],nq)));
+    i++;
+  }
+  return{
+    gcd:r[i-1],s:sv[i-1],t:tv[i-1],
+    rows:r.map((ri,j)=>({k:j,r:ri,q:(j>0&&j<r.length-1)?qs[j]:null,s:sv[j],t:tv[j],last:j===r.length-1}))
+  };
+}
+
+function solveEq(a,b,c){
+  if(cz(a)&&cz(b))return{error:true};
+  const br=euclidBezout(a,b);
+  const cd=gdivExact(c,br.gcd);
+  if(cd===null)return{hasSol:false,...br};
+  return{hasSol:true,...br,x0:cmul(cd,br.s),y0:cmul(cd,br.t),
+         bd:gdivExact(b,br.gcd),ad:gdivExact(a,br.gcd),cd};
+}
+
+function fourVariants(gcd,s,t){
+  return[[C(1,0),'1'],[C(-1,0),'-1'],[C(0,1),'i'],[C(0,-1),'-i']].map(([u,ul])=>({
+    ul,d:cmul(gcd,u),s:cmul(s,u),t:cmul(t,u)
+  }));
+}
+
+function findIntSol(x0,y0,ad,bd){
+  const γ2=x0.im,δ2=y0.im;
+  const β1=bd.re,β2=bd.im,α1=ad.re,α2=ad.im;
+  if(Math.abs(γ2)<1e-9&&Math.abs(δ2)<1e-9)
+    return{ok:true,z:C(0,0),x:C(x0.re,0),y:C(y0.re,0),trivial:true};
+  const det=β2*α1-β1*α2;
+  if(Math.abs(det)<1e-9)return{ok:false,why:'sistema indeterminado (det = 0)'};
+  const z1v=(-γ2*α1-β1*δ2)/det;
+  const z2v=(β2*δ2+α2*γ2)/det;
+  if(Math.abs(z1v-Math.round(z1v))>1e-9||Math.abs(z2v-Math.round(z2v))>1e-9)
+    return{ok:false,why:'não existe z ∈ ℤ[i] que torne x, y ∈ ℤ'};
+  const z=C(Math.round(z1v),Math.round(z2v));
+  const x=cadd(x0,cmul(bd,z));
+  const y=csub(y0,cmul(ad,z));
+  if(Math.abs(x.im)>1e-9||Math.abs(y.im)>1e-9)return{ok:false,why:'verificação falhou'};
+  return{ok:true,z,x:C(Math.round(x.re),0),y:C(Math.round(y.re),0)};
+}
+
+// ══════════════════ ESTADO ══════════════════
+const S={
+  tab:0,
+  a:{re:132,im:88},b:{re:42,im:18},c:{re:14,im:-14},
+  z:{re:0,im:0},z1:{re:75,im:41},z2:{re:9,im:15},
+  showTbl:true,showVar:false,explained:false
+};
+
+const PRESETS=[
+  {label:'Ex. artigo 1',a:{re:132,im:88}, b:{re:42,im:18},  c:{re:14,im:-14}},
+  {label:'Ex. artigo 2',a:{re:75,im:41},  b:{re:9,im:15},   c:{re:7,im:1}},
+  {label:'Ex. artigo 3',a:{re:52,im:32},  b:{re:15,im:25},  c:{re:7,im:1}},
+  {label:'Coprimos',    a:{re:1250,im:885},b:{re:720,im:256},c:{re:5,im:0}},
+  {label:'Sem solução', a:{re:6,im:0},    b:{re:0,im:4},    c:{re:3,im:0}},
+];
+
+// ══════════════════ HELPERS ══════════════════
+const fmtR=x=>x.toFixed(4).replace(/\.?0+$/,'');
+
+function chip(lbl,val,col,big=false){
+  return`<div class="chip${big?'':' sm'}" style="border:1px solid ${col}44">
+    <span class="chip-lbl" style="color:${col}">${lbl}</span>
+    <span class="chip-val">${val}</span></div>`;
+}
+function vbox(html,ok){
+  const ic=ok===true?'<span style="color:#34d399;font-weight:700"> ✅</span>':ok===false?'<span style="color:#f87171;font-weight:700"> ❌</span>':'';
+  return`<div class="verif">${html}${ic}</div>`;
+}
+function expl(text){
+  if(!S.explained)return'';
+  return`<div class="explain-box">📖 ${text}</div>`;
+}
+function buildTbl(rows){
+  if(!rows?.length)return'';
+  return`<div class="tbl-wrap"><table>
+    <thead><tr><th>k</th><th>rₖ</th><th>qₖ</th><th>sₖ</th><th>tₖ</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td style="color:#c4b5fd">${r.k}</td>
+      <td style="color:${cz(r.r)?'#94a3b8':'#f9fafb'}">${cstr(r.r)}</td>
+      <td style="color:#cbd5e1">${r.q?cstr(r.q):'—'}</td>
+      <td style="color:#f9a8d4">${r.last?'—':cstr(r.s)}</td>
+      <td style="color:#6ee7b7">${r.last?'—':cstr(r.t)}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+function buildInput(lbl,col,key,note=''){
+  return`<div class="cinput">
+    <div class="cinput-lbl" style="color:${col}">${lbl}<span class="cinput-note">${note}</span></div>
+    <div class="row">
+      <input type="number" value="${S[key].re}" oninput="inp('${key}','re',this.value)"/>
+      <span style="color:#94a3b8;font-size:16px">+</span>
+      <input type="number" value="${S[key].im}" oninput="inp('${key}','im',this.value)"/>
+      <span style="color:${col};font-weight:900">i</span>
+      <span style="color:#cbd5e1;font-size:12px">= ${cstr(C(S[key].re,S[key].im))}</span>
+    </div></div>`;
+}
+function buildVariants(gcd,s,t,a,b){
+  const vars=fourVariants(gcd,s,t);
+  const rows=vars.map(v=>{
+    const chk=cadd(cmul(a,v.s),cmul(b,v.t));const ok=ceq(chk,v.d);
+    return`<tr><td style="color:#fbbf24">×${v.ul}</td><td style="color:#34d399;font-weight:700">${cstr(v.d)}</td>
+      <td style="color:#f9a8d4">${cstr(v.s)}</td><td style="color:#6ee7b7">${cstr(v.t)}</td>
+      <td style="color:${ok?'#34d399':'#f87171'}">${cstr(chk)} ${ok?'✅':'❌'}</td></tr>`;
+  }).join('');
+  return`<div class="variants-box">
+    <div style="font-size:11px;font-weight:700;color:#cbd5e1;letter-spacing:1px;margin-bottom:10px">✦ 4 MDCs ASSOCIADOS EM ℤ[i]</div>
+    ${expl(`Em ℤ[i], os elementos invertíveis são <strong>𝒰(ℤ[i]) = {1, −1, i, −i}</strong>. Pela Obs. 2.8 do artigo, se d = mdc(a,b) então d·u também é mdc válido para u ∈ 𝒰(ℤ[i]). As constantes de Bezout correspondentes são s·u e t·u.`)}
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Unidade u</th><th>mdc = d·u</th><th>s·u</th><th>t·u</th><th>a·(su)+b·(tu)</th></tr></thead>
+      <tbody>${rows}</tbody></table></div></div>`;
+}
+function buildIntSol(x0,y0,ad,bd,a,b,c){
+  const r=findIntSol(x0,y0,ad,bd);
+  const det=(bd.im*ad.re-bd.re*ad.im);
+  let inner='';
+  if(r.ok){
+    const chk=cadd(cmul(a,r.x),cmul(b,r.y));const ok=ceq(chk,c);
+    inner=`<div style="color:#6ee7b7;font-weight:700;font-size:13px;margin-bottom:10px">
+      ✅ Solução inteira encontrada
+      ${r.trivial?'<span style="color:#94a3b8;font-size:11px;font-weight:400"> (x₀ e y₀ já são inteiros — z = 0)</span>':''}
+    </div>
+    <div class="chips">
+      ${chip('z ∈ ℤ[i]',cstr(r.z),'#a78bfa',true)}
+      ${chip('x ∈ ℤ',cstr(r.x),'#34d399',true)}
+      ${chip('y ∈ ℤ',cstr(r.y),'#f472b6',true)}
+    </div>
+    ${vbox(`<strong style="color:#f9fafb">Verificação:</strong> (${cstr(a)})·${cstr(r.x,true)} + (${cstr(b)})·${cstr(r.y,true)} = <strong style="color:${ok?'#34d399':'#f87171'}">${cstr(chk)}</strong>`,ok)}`;
+  }else{
+    inner=`<div style="color:#94a3b8;font-size:13px;line-height:1.7">
+      ⊘ <strong style="color:#cbd5e1">Não existe solução inteira</strong> — ${r.why}</div>`;
+  }
+  return`<div class="int-box ${r.ok?'int-found':'int-none'}">
+    <div style="font-size:11px;font-weight:700;color:${r.ok?'#34d399':'#94a3b8'};letter-spacing:1px;margin-bottom:10px">ℤ SOLUÇÃO INTEIRA</div>
+    ${expl(`Busca-se z = z₁+z₂i ∈ ℤ[i] tal que Im(x) = Im(y) = 0. Isso leva ao sistema 2×2 sobre ℤ com det = ${det}. Solução inteira existe se e somente se z₁ e z₂ resultam inteiros.`)}
+    ${inner}</div>`;
+}
+
+// ══════════════════ RENDER ══════════════════
+function render(){
+  const{tab,a,b,c,z,z1,z2}=S;
+  document.querySelectorAll('.tab-btn').forEach((btn,i)=>btn.classList.toggle('on',i===tab));
+  document.getElementById('btn-explain').classList.toggle('on',S.explained);
+
+  // Cada aba constrói seu próprio HTML e retorna
+  if(tab===0||tab===1){ renderCalc(); return; }
+  if(tab===2)          { renderDiv();  return; }
+  if(tab===3)          { renderMet();  return; }
+}
+
+// ── Abas 0 e 1 ──
+function renderCalc(){
+  const{tab,a,b,c,z}=S;
+  const aC=C(a.re,a.im),bC=C(b.re,b.im),cC=C(c.re,c.im),zC=C(z.re,z.im);
+  let h='';
+
+  h+=`<div class="card" style="border-color:rgba(255,255,255,.1)">
+    <div class="sec" style="color:#94a3b8">ENTRADAS</div>
+    ${buildInput('a','#f472b6','a')}
+    ${buildInput('b','#34d399','b')}
+    ${tab===1?buildInput('c','#fbbf24','c'):''}
+  </div>`;
+
+  const br=euclidBezout(aC,bC);
+  const vbez=cadd(cmul(aC,br.s),cmul(bC,br.t));
+  const bezOk=ceq(vbez,br.gcd);
+
+  h+=`<div class="card" style="border-color:rgba(124,58,237,.4)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="sec" style="color:#a78bfa;margin-bottom:0">MDC + BEZOUT</div>
+      <div style="display:flex;gap:6px">
+        <button class="var-btn" onclick="S.showVar=!S.showVar;render()">${S.showVar?'▲ Variantes':'★ 4 Variantes'}</button>
+        <button class="tog-btn" onclick="S.showTbl=!S.showTbl;render()">${S.showTbl?'▲ Tabela':'▼ Tabela'}</button>
+      </div>
+    </div>
+    ${expl(`O <strong>Algoritmo de Euclides</strong> é aplicado a a = ${cstr(aC)} e b = ${cstr(bC)} por divisões sucessivas em ℤ[i] (Obs. 2.9). A sequência δ(rₖ) decresce até zero, e o último rₙ₋₁ ≠ 0 é o mdc.`)}
+    <div class="chips">
+      ${chip('mdc(a,b)',cstr(br.gcd),'#34d399',true)}
+      ${chip('s (Bezout)',cstr(br.s),'#818cf8',true)}
+      ${chip('t (Bezout)',cstr(br.t),'#f472b6',true)}
+    </div>
+    ${expl(`Pelo <strong>Teorema de Bezout</strong> (Seção 3), s = ${cstr(br.s)} e t = ${cstr(br.t)} satisfazem a·s + b·t = mdc(a,b), calculados pelas recorrências sₖ = sₖ₋₂ + sₖ₋₁(−qₖ₋₁).`)}
+    ${vbox(`<strong style="color:#f9fafb">Verificação Bezout:</strong> (${cstr(aC)})·(${cstr(br.s,true)}) + (${cstr(bC)})·(${cstr(br.t,true)}) = <strong style="color:${bezOk?'#34d399':'#f87171'}">${cstr(vbez)}</strong>`,bezOk)}
+    ${S.showTbl?buildTbl(br.rows):''}
+    ${S.showVar?buildVariants(br.gcd,br.s,br.t,aC,bC):''}
+  </div>`;
+
+  if(tab===1){
+    const er=solveEq(aC,bC,cC);
+    h+=`<div class="card" style="border-color:${er.hasSol?'rgba(52,211,153,.4)':'rgba(239,68,68,.4)'}">
+      <div class="sec" style="color:${er.hasSol?'#34d399':'#f87171'}">SOLUÇÃO DA EQUAÇÃO</div>
+      <div class="eq-disp">(${cstr(aC)})·X + (${cstr(bC)})·Y = ${cstr(cC)}</div>`;
+
+    if(er.hasSol){
+      const genX=cadd(er.x0,cmul(er.bd,zC));
+      const genY=csub(er.y0,cmul(er.ad,zC));
+      const veq=cadd(cmul(aC,genX),cmul(bC,genY));
+      const veqOk=ceq(veq,cC);
+      h+=`
+      ${expl(`A equação tem solução pois <strong>mdc(a,b) = ${cstr(er.gcd)}</strong> divide <strong>c = ${cstr(cC)}</strong> (Prop. 4.1). Solução inicial: x₀ = (c/d)·s, y₀ = (c/d)·t com c/d = ${cstr(er.cd)}.`)}
+      <div class="ok-box ok-g"><span style="color:#6ee7b7">✅ Tem solução!</span> <span style="color:#e2e8f0;font-weight:500">mdc = ${cstr(er.gcd)} divide ${cstr(cC)}</span></div>
+      <div class="chips">${chip('x₀',cstr(er.x0),'#34d399',true)}${chip('y₀',cstr(er.y0),'#f472b6',true)}</div>
+      <div class="sol-box">
+        <div class="sol-sec">SOLUÇÃO GERAL (z ∈ ℤ[i] qualquer)</div>
+        ${expl(`Pelo Teorema 4.10, toda solução é da forma x = x₀ + (b/d)·z e y = y₀ − (a/d)·z. Reciprocamente, qualquer z ∈ ℤ[i] gera uma solução válida.`)}
+        <div style="color:#a5b4fc;font-weight:700;font-size:14px;margin-bottom:6px">x = ${cstr(er.x0)} + ${cstr(er.bd,true)}·z</div>
+        <div style="color:#f9a8d4;font-weight:700;font-size:14px">y = ${cstr(er.y0)} − ${cstr(er.ad,true)}·z</div>
+      </div>
+      <div class="z-box">
+        <div style="font-size:11px;font-weight:800;color:#a5b4fc;margin-bottom:12px;letter-spacing:1px">CALCULAR PARA z =</div>
+        <div class="row" style="margin-bottom:14px">
+          <input type="number" value="${S.z.re}" oninput="inp('z','re',this.value)"/>
+          <span style="color:#94a3b8;font-size:16px">+</span>
+          <input type="number" value="${S.z.im}" oninput="inp('z','im',this.value)"/>
+          <span style="color:#818cf8;font-weight:900">i</span>
+          <span style="color:#cbd5e1;font-size:12px">= ${cstr(zC)}</span>
+        </div>
+        <div class="chips">${chip('x(z='+cstr(zC)+')',cstr(genX),'#34d399',true)}${chip('y(z='+cstr(zC)+')',cstr(genY),'#f472b6',true)}</div>
+        ${vbox(`<strong style="color:#f9fafb">Verificação:</strong> (${cstr(aC)})·(${cstr(genX,true)}) + (${cstr(bC)})·(${cstr(genY,true)}) = <strong style="color:${veqOk?'#34d399':'#f87171'}">${cstr(veq)}</strong>`,veqOk)}
+      </div>
+      ${buildIntSol(er.x0,er.y0,er.ad,er.bd,aC,bC,cC)}`;
+    }else{
+      h+=`
+      ${expl(`Sem solução: mdc(a,b) = ${cstr(er.gcd)} não divide c = ${cstr(cC)}. Pela Prop. 4.1, d | c é condição necessária e suficiente.`)}
+      <div class="ok-box ok-r">❌ Sem solução — <span style="font-weight:500;color:#e2e8f0">mdc = ${cstr(er.gcd)} não divide ${cstr(cC)}</span></div>`;
+    }
+    h+='</div>';
+  }
+
+  document.getElementById('app').innerHTML=h;
+}
+
+// ── Aba 2: Divisão ──
+function renderDiv(){
+  const z1C=C(S.z1.re,S.z1.im),z2C=C(S.z2.re,S.z2.im);
+  let h=`<div class="card" style="border-color:rgba(251,191,36,.3)">
+    <div class="sec" style="color:#fbbf24">ALGORITMO 3.5 · ENTRADAS</div>
+    <p style="font-size:12px;color:#cbd5e1;margin-bottom:16px;font-style:italic">z₁ ÷ z₂ → z₁ = z₂·q + r, com δ(r) &lt; δ(z₂)</p>
+    ${buildInput('z₁','#fbbf24','z1','(dividendo)')}
+    ${buildInput('z₂','#fb923c','z2','(divisor, ≠ 0)')}
+  </div>`;
+
+  if(cz(z2C)){
+    h+=`<div class="card ok-r" style="text-align:center;font-weight:700">❌ z₂ não pode ser zero</div>`;
+  }else{
+    const dr=gdiv(z1C,z2C);
+    if(dr){
+      const vd=cadd(cmul(z2C,dr.q),dr.r);
+      const dOk=ceq(vd,z1C),nOk=cn2(dr.r)<dr.nz2||cz(dr.r);
+      h+=`<div class="card" style="border-color:rgba(251,191,36,.35)">
+        <div class="sec" style="color:#fbbf24">PASSO A PASSO</div>
+        ${expl(`O <strong>Algoritmo 3.5</strong> calcula z₁/z₂ em ℚ[i] e arredonda para ℤ[i]. O arredondamento garante (α−m)²+(β−n)² ≤ 0,5, logo δ(r) ≤ ½·δ(z₂) &lt; δ(z₂).`)}
+        <div class="step step-y">
+          <div class="step-lbl" style="color:#fde68a">PASSO 1 · Calcular z₁/z₂ ∈ ℚ[i]</div>
+          <div class="step-body">
+            a² + b² = <strong style="color:#f9fafb">${dr.nz2}</strong><br>
+            α = (${z1C.re}·${z2C.re} + ${z1C.im}·${z2C.im}) / ${dr.nz2} = <strong style="color:#fde68a">${fmtR(dr.α)}</strong><br>
+            β = (${z1C.im}·${z2C.re} − ${z1C.re}·${z2C.im}) / ${dr.nz2} = <strong style="color:#fde68a">${fmtR(dr.β)}</strong><br>
+            <span style="color:#cbd5e1;font-size:12px">z₁/z₂ = ${fmtR(dr.α)} + (${fmtR(dr.β)})i ∈ ℚ[i]</span>
+          </div>
+        </div>
+        <div class="step step-p">
+          <div class="step-lbl" style="color:#c4b5fd">PASSO 2 · Arredondar para ℤ (|m−α| ≤ 0,5 e |n−β| ≤ 0,5)</div>
+          <div class="step-body">
+            m = round(${fmtR(dr.α)}) = <strong style="color:#e0d4ff">${dr.m}</strong>
+            <span style="color:#94a3b8;font-size:12px;margin-left:10px">|m−α| = ${Math.abs(dr.m-dr.α).toFixed(4)}</span><br>
+            n = round(${fmtR(dr.β)}) = <strong style="color:#e0d4ff">${dr.n}</strong>
+            <span style="color:#94a3b8;font-size:12px;margin-left:10px">|n−β| = ${Math.abs(dr.n-dr.β).toFixed(4)}</span><br>
+            <span style="color:#6ee7b7;font-weight:700">q = m + ni = ${cstr(dr.q)}</span><br>
+            <span>r = z₁ − z₂·q = ${cstr(z1C)} − (${cstr(z2C)})·(${cstr(dr.q,true)}) = ${cstr(dr.r)}</span>
+          </div>
+        </div>
+        <div class="chips">
+          ${chip('Quociente q',cstr(dr.q),'#34d399',true)}
+          ${chip('Resto r',cstr(dr.r),'#f472b6',true)}
+          ${chip('δ(z₂)',dr.nz2,'#fbbf24')}
+          ${chip('δ(r)',cn2(dr.r),'#fb923c')}
+        </div>
+        ${vbox(`<strong style="color:#f9fafb">Verificação:</strong> z₂·q + r = (${cstr(z2C)})·(${cstr(dr.q,true)}) + (${cstr(dr.r,true)}) = <strong style="color:${dOk?'#34d399':'#f87171'}">${cstr(vd)}</strong>`,dOk)}
+        ${vbox(`<strong style="color:#f9fafb">Condição δ:</strong> δ(r) = ${cn2(dr.r)} ${nOk?'<':'≥'} δ(z₂) = ${dr.nz2}`,nOk)}
+      </div>`;
+    }
+  }
+  document.getElementById('app').innerHTML=h;
+}
+
+// ── Aba 3: Metodologia ──
+function renderMet(){
+  const h=`
+  <div class="card" style="border-color:rgba(129,140,248,.35)">
+    <div class="sec" style="color:#a5b4fc">O QUE É ESTE SIMULADOR?</div>
+    <p style="font-size:13px;color:#e2e8f0;line-height:1.85;margin-bottom:12px">
+      Este simulador resolve <strong style="color:#f9fafb">equações diofantinas lineares</strong> da forma
+      <strong style="color:#fbbf24">aX + bY = c</strong> com coeficientes no domínio dos
+      <strong style="color:#f9fafb">inteiros gaussianos ℤ[i] = {a+bi : a,b ∈ ℤ}</strong>.
+      Todos os algoritmos são baseados no artigo:
+    </p>
+    <a class="art-link" style="display:inline-flex" href="https://periodicos.ifrs.edu.br/index.php/REMAT/article/view/4150" target="_blank" rel="noopener noreferrer">
+      📄 Equações Diofantinas sobre Domínios Euclidianos · REMAT, IFRS, 2021
+    </a>
+  </div>
+
+  <div class="card" style="border-color:rgba(251,191,36,.3)">
+    <div class="sec" style="color:#fbbf24">① INTEIROS GAUSSIANOS ℤ[i]</div>
+    <p style="font-size:13px;color:#e2e8f0;line-height:1.85;margin-bottom:10px">
+      ℤ[i] é o conjunto dos números complexos com partes inteiras. É um
+      <strong style="color:#f9fafb">domínio euclidiano</strong> com função norma:
+    </p>
+    <div class="met-formula">δ(a + bi) = a² + b²</div>
+    <p style="font-size:13px;color:#e2e8f0;line-height:1.85">
+      Os <strong style="color:#f9fafb">elementos invertíveis</strong> são
+      <strong style="color:#fbbf24">𝒰(ℤ[i]) = {1, −1, i, −i}</strong> (norma = 1).
+      Por isso, o mdc não é único — existem sempre <strong>4 associados válidos</strong>.
+    </p>
+  </div>
+
+  <div class="card" style="border-color:rgba(251,146,36,.35)">
+    <div class="sec" style="color:#fb923c">② DIVISÃO EM ℤ[i] · Algoritmo 3.5</div>
+    <p style="font-size:13px;color:#e2e8f0;line-height:1.85;margin-bottom:10px">
+      Dados z₁ = x+yi, z₂ = a+bi ∈ ℤ[i], z₂ ≠ 0, determina q, r ∈ ℤ[i] com
+      <strong style="color:#fbbf24">z₁ = z₂·q + r</strong> e <strong style="color:#fbbf24">δ(r) &lt; δ(z₂)</strong>.
+    </p>
+    <div class="met-block" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)">
+      <strong style="color:#fbbf24">Passo 1.</strong> α := (xa+yb)/(a²+b²) &nbsp; β := (ya−xb)/(a²+b²) &nbsp; <span style="color:#94a3b8">(z₁=x+yi, z₂=a+bi)</span><br>
+      <strong style="color:#fbbf24">Passo 2.</strong> Tomar m,n ∈ ℤ com |m−α| ≤ 0,5 e |n−β| ≤ 0,5<br>
+      <strong style="color:#6ee7b7">Resultado.</strong> q = m+ni &nbsp;·&nbsp; r = z₂[(α−m)+(β−n)i]
+    </div>
+    <p style="font-size:12px;color:#cbd5e1;line-height:1.7">
+      O arredondamento garante (α−m)²+(β−n)² ≤ 0,5, logo δ(r) ≤ 0,5·δ(z₂) &lt; δ(z₂). ✓
+    </p>
+  </div>
+
+  <div class="card" style="border-color:rgba(167,139,250,.35)">
+    <div class="sec" style="color:#a78bfa">③ ALGORITMO DE EUCLIDES · mdc(a,b)</div>
+    <p style="font-size:13px;color:#e2e8f0;line-height:1.85;margin-bottom:10px">
+      Aplica divisões iterativas com r₀ = a, r₁ = b:
+    </p>
+    <div class="met-block" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)">
+      r₀ = r₁·q₁ + r₂ &nbsp;, δ(r₂) &lt; δ(r₁)<br>
+      r₁ = r₂·q₂ + r₃ &nbsp;, δ(r₃) &lt; δ(r₂)<br>
+      <span style="color:#cbd5e1">&nbsp;&nbsp;⋮</span><br>
+      rₙ₋₂ = rₙ₋₁·qₙ₋₁ + <strong style="color:#f87171">0</strong><br>
+      <strong style="color:#34d399">mdc(a,b) = rₙ₋₁</strong> (último resto não nulo)
+    </div>
+    <p style="font-size:12px;color:#cbd5e1;line-height:1.7">
+      A sequência δ(r₁) &gt; δ(r₂) &gt; ⋯ é decrescente em ℕ, garantindo terminação em finitos passos.
+    </p>
+  </div>
+
+  <div class="card" style="border-color:rgba(52,211,153,.35)">
+    <div class="sec" style="color:#34d399">④ TEOREMA DE BEZOUT</div>
+    <p style="font-size:13px;color:#e2e8f0;line-height:1.85;margin-bottom:10px">
+      Existem <strong style="color:#f9fafb">s, t ∈ ℤ[i]</strong> tais que
+      <strong style="color:#fbbf24">a·s + b·t = mdc(a,b)</strong>,
+      calculados pelas recorrências:
+    </p>
+    <div class="met-block" style="background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div><strong style="color:#6ee7b7">s₀ = 1,</strong> s₁ = 0</div>
+      <div><strong style="color:#f9a8d4">t₀ = 0,</strong> t₁ = 1</div>
+      <div>sₖ = sₖ₋₂ + sₖ₋₁·(−qₖ₋₁)</div>
+      <div>tₖ = tₖ₋₂ + tₖ₋₁·(−qₖ₋₁)</div>
+    </div>
+    <p style="font-size:12px;color:#cbd5e1;margin-top:8px;line-height:1.7">
+      Prova por indução: rₖ = a·sₖ + b·tₖ para todo k. Logo rₙ₋₁ = a·s + b·t = mdc(a,b).
+    </p>
+  </div>
+
+  <div class="card" style="border-color:rgba(248,113,113,.35)">
+    <div class="sec" style="color:#f87171">⑤ EQUAÇÃO DIOFANTINA aX + bY = c</div>
+
+    <div style="margin-bottom:14px">
+      <div class="met-sec" style="color:#fca5a5">EXISTÊNCIA · Proposição 4.1</div>
+      <div class="met-block" style="background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2)">
+        A equação tem solução em ℤ[i] <strong style="color:#f9fafb">se e somente se</strong>
+        <strong style="color:#34d399">mdc(a,b) | c</strong>.
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div class="met-sec" style="color:#fca5a5">SOLUÇÃO INICIAL</div>
+      <div class="met-block" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)">
+        Se d | c, seja c/d a divisão exata. Então:<br>
+        <strong style="color:#34d399">x₀ = (c/d)·s</strong> &nbsp;&nbsp; <strong style="color:#f9a8d4">y₀ = (c/d)·t</strong>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div class="met-sec" style="color:#fca5a5">SOLUÇÃO GERAL · Teorema 4.10</div>
+      <div class="met-block" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)">
+        Para todo z ∈ ℤ[i]:<br>
+        <strong style="color:#a5b4fc">x = x₀ + (b/d)·z</strong><br>
+        <strong style="color:#f9a8d4">y = y₀ − (a/d)·z</strong><br>
+        <span style="color:#cbd5e1;font-size:11px">Toda solução é desta forma para algum z.</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="met-sec" style="color:#fca5a5">SOLUÇÃO INTEIRA · Exemplo 5.2</div>
+      <p style="font-size:13px;color:#e2e8f0;line-height:1.85;margin-bottom:10px">
+        Uma solução (x, y) ∈ ℤ[i]² é <strong style="color:#f9fafb">inteira</strong> quando
+        x, y ∈ ℤ, ou seja, suas partes imaginárias são zero. Escrevemos a solução geral
+        com z = z₁ + z₂i e separamos as partes real e imaginária:
+      </p>
+      <div class="met-block" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)">
+        Seja <strong style="color:#a5b4fc">b/d = β₁ + β₂i</strong>,
+             <strong style="color:#f9a8d4">a/d = α₁ + α₂i</strong>,
+             <strong style="color:#34d399">x₀ = p + qi</strong>,
+             <strong style="color:#fbbf24">y₀ = u + vi</strong>.<br><br>
+        Para Im(x) = 0: &nbsp; Im(x₀ + (b/d)·z) = 0 &nbsp;⟹&nbsp;
+        <strong style="color:#fbbf24">β₂z₁ + β₁z₂ = −q</strong><br>
+        Para Im(y) = 0: &nbsp; Im(y₀ − (a/d)·z) = 0 &nbsp;⟹&nbsp;
+        <strong style="color:#fbbf24">α₂z₁ + α₁z₂ = v</strong>
+      </div>
+      <p style="font-size:12px;color:#cbd5e1;line-height:1.85;margin-top:8px">
+        Isso forma um sistema linear 2×2 nas incógnitas inteiras <strong style="color:#f9fafb">z₁</strong> e
+        <strong style="color:#f9fafb">z₂</strong>. O determinante é
+        <strong style="color:#fbbf24">det = β₂α₁ − β₁α₂</strong>.
+        Se det ≠ 0 e a solução (z₁, z₂) tiver ambos valores inteiros,
+        então <strong style="color:#34d399">x = p + β₁z₁ − β₂z₂ ∈ ℤ</strong> e
+        <strong style="color:#f9a8d4">y = u − α₁z₁ + α₂z₂ ∈ ℤ</strong>.
+        Caso contrário, a equação não admite solução inteira.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(148,163,184,.2)">
+    <div class="sec" style="color:#94a3b8">📌 SOBRE A IMPLEMENTAÇÃO</div>
+    <p style="font-size:12px;color:#cbd5e1;line-height:1.85">
+      Os algoritmos correspondem aos <strong style="color:#f9fafb">Algoritmos 6.1 a 6.4</strong> do artigo,
+      originalmente desenvolvidos para planilhas LibreOffice e aqui portados para
+      JavaScript puro, sem dependências externas, executando diretamente no navegador.
+    </p>
+  </div>`;
+
+  document.getElementById('app').innerHTML=h;
+}
+
+// ══════════════════ EXPORT PDF ══════════════════
+function exportPDF(){
+  const{a,b,c}=S;
+  const aC=C(a.re,a.im),bC=C(b.re,b.im),cC=C(c.re,c.im);
+  const br=euclidBezout(aC,bC);
+  const er=solveEq(aC,bC,cC);
+  const tblRows=br.rows.map(r=>`<tr><td>${r.k}</td><td>${cstr(r.r)}</td><td>${r.q?cstr(r.q):'—'}</td><td>${r.last?'—':cstr(r.s)}</td><td>${r.last?'—':cstr(r.t)}</td></tr>`).join('');
+  const varRows=fourVariants(br.gcd,br.s,br.t).map(v=>{
+    const chk=cadd(cmul(aC,v.s),cmul(bC,v.t));
+    return`<tr><td>×${v.ul}</td><td>${cstr(v.d)}</td><td>${cstr(v.s)}</td><td>${cstr(v.t)}</td><td>${cstr(chk)} ${ceq(chk,v.d)?'✓':'✗'}</td></tr>`;
+  }).join('');
+  let eqSec=`<h2>4. Equação Diofantina</h2>
+  <p><b>Equação:</b> (${cstr(aC)})·X + (${cstr(bC)})·Y = ${cstr(cC)}</p>`;
+  if(er.hasSol){
+    const ir=findIntSol(er.x0,er.y0,er.ad,er.bd);
+    eqSec+=`<p><b>Condição:</b> mdc = ${cstr(br.gcd)} divide ${cstr(cC)} ✓ — equação tem solução</p>
+    <p><b>c/d =</b> ${cstr(er.cd)} &ensp; <b>x₀ =</b> ${cstr(er.x0)} &ensp; <b>y₀ =</b> ${cstr(er.y0)}</p>
+    <p><b>Solução geral:</b> x = ${cstr(er.x0)} + ${cstr(er.bd,true)}·z &ensp; y = ${cstr(er.y0)} − ${cstr(er.ad,true)}·z &ensp; (z ∈ ℤ[i])</p>
+    <p><b>Solução inteira:</b> ${ir.ok?`z = ${cstr(ir.z)}, x = ${cstr(ir.x)}, y = ${cstr(ir.y)}`:'não existe'}</p>`;
+  }else if(er.hasSol===false){
+    eqSec+=`<p><b>Conclusão:</b> mdc = ${cstr(br.gcd)} não divide ${cstr(cC)} → sem solução em ℤ[i]</p>`;
+  }
+  const doc=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/>
+  <title>Resolução — Equações Diofantinas em ℤ[i]</title>
+  <style>body{font-family:'Times New Roman',serif;margin:32px 44px;color:#000;font-size:13px;line-height:1.7}
+  h1{font-size:18px;color:#1a1040;border-bottom:2px solid #1a1040;padding-bottom:8px;margin-bottom:4px}
+  h2{font-size:14px;color:#1a1040;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12px}
+  th{background:#e8e0ff;padding:6px 10px;text-align:center;border:1px solid #999;font-weight:700}
+  td{padding:5px 10px;text-align:center;border:1px solid #ccc}
+  p{margin:4px 0}.note{background:#fffbea;border-left:3px solid #d97706;padding:8px 12px;margin:10px 0;font-size:12px}
+  .footer{margin-top:30px;font-size:10px;color:#888;border-top:1px solid #ddd;padding-top:8px}</style>
+  </head><body>
+  <h1>Resolução — Equações Diofantinas em ℤ[i]</h1>
+  <p style="color:#555;font-size:11px;margin-bottom:16px">Artigo base: REMAT, IFRS, 2021 · https://periodicos.ifrs.edu.br/index.php/REMAT/article/view/4150</p>
+  <h2>1. Dados</h2><p><b>a =</b> ${cstr(aC)} &ensp; <b>b =</b> ${cstr(bC)}</p>
+  <h2>2. Algoritmo de Euclides — mdc(a,b)</h2>
+  <div class="note">Divisões sucessivas em ℤ[i] (Obs. 2.9). Último resto ≠ 0 é o mdc.</div>
+  <table><thead><tr><th>k</th><th>rₖ</th><th>qₖ</th><th>sₖ</th><th>tₖ</th></tr></thead><tbody>${tblRows}</tbody></table>
+  <p><b>mdc(a,b) =</b> ${cstr(br.gcd)}</p>
+  <h2>3. Constantes de Bezout</h2>
+  <p><b>s =</b> ${cstr(br.s)} &ensp; <b>t =</b> ${cstr(br.t)}</p>
+  <p><b>Verificação:</b> (${cstr(aC)})·(${cstr(br.s,true)}) + (${cstr(bC)})·(${cstr(br.t,true)}) = ${cstr(cadd(cmul(aC,br.s),cmul(bC,br.t)))} ✓</p>
+  <h2>3.1 Quatro MDCs Associados</h2>
+  <table><thead><tr><th>u</th><th>d·u</th><th>s·u</th><th>t·u</th><th>Verificação</th></tr></thead><tbody>${varRows}</tbody></table>
+  ${eqSec}
+  <div class="footer">Calculadora de Equações Diofantinas em ℤ[i] · REMAT 2021</div>
+  </body></html>`;
+  const w=window.open('','_blank','width=820,height=940');
+  w.document.write(doc);w.document.close();w.focus();
+  setTimeout(()=>w.print(),600);
+}
+
+// ══════════════════ EVENTOS ══════════════════
+function inp(key,part,val){S[key][part]=parseInt(val)||0;render();}
+function setTab(i){S.tab=i;render();}
+function toggleExplained(){S.explained=!S.explained;render();}
+
+const pc=document.getElementById('presets');
+PRESETS.forEach(p=>{
+  const b=document.createElement('button');
+  b.className='preset-btn';b.textContent=p.label;
+  b.onclick=()=>{S.a={...p.a};S.b={...p.b};S.c={...p.c};render();};
+  pc.appendChild(b);
+});
+
+render();
+</script>
+</body>
+</html>
