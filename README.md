@@ -1,4 +1,4 @@
-[README (2).md](https://github.com/user-attachments/files/34100335/README.2.md)
+[README (3).md](https://github.com/user-attachments/files/34100656/README.3.md)
 # Equações Diofantinas em ℤ[i]
 
 Simulador interativo, em um único arquivo HTML, que resolve **equações diofantinas lineares** da forma
@@ -225,8 +225,8 @@ O botão **📥 Exportar PDF** abre uma nova janela com a resolução formatada 
 Não há instalação nem build. Basta baixar o arquivo e abri-lo:
 
 ```bash
-git clone https://github.com/<usuario>/<repositorio>.git
-cd <repositorio>
+git clone https://github.com/lbemm3/equacoes-diofantinas.git
+cd equacoes-diofantinas
 # abra o arquivo no navegador:
 open diofantina_html.html        # macOS
 xdg-open diofantina_html.html    # Linux
@@ -245,7 +245,7 @@ python3 -m http.server 8000
 1. No repositório, vá em **Settings → Pages**.
 2. Em *Build and deployment*, selecione **Deploy from a branch** e escolha a branch principal e a pasta `/ (root)`.
 3. Para a página abrir direto na raiz do endereço, renomeie (ou copie) o arquivo para `index.html`.
-4. O simulador ficará disponível em `https://<usuario>.github.io/<repositorio>/`.
+4. O simulador ficará disponível em `https://lbemm3.github.io/equacoes-diofantinas/`.
 
 ## Referência
 
