@@ -1,4 +1,4 @@
-
+[README (4).md](https://github.com/user-attachments/files/34100832/README.4.md)
 # Equações Diofantinas em ℤ[i]
 
 Simulador interativo, em um único arquivo HTML, que resolve **equações diofantinas lineares** da forma
