@@ -1,4 +1,4 @@
-[README (3).md](https://github.com/user-attachments/files/34100656/README.3.md)
+
 # Equações Diofantinas em ℤ[i]
 
 Simulador interativo, em um único arquivo HTML, que resolve **equações diofantinas lineares** da forma
@@ -8,6 +8,8 @@ a·X + b·Y = c        com a, b, c ∈ ℤ[i]
 ```
 
 sobre os **inteiros gaussianos** ℤ[i] = { x + yi : x, y ∈ ℤ }. A ferramenta calcula o MDC pelo algoritmo euclidiano, obtém as constantes de Bézout, decide a existência de solução, descreve a **solução geral** e ainda procura soluções em que X e Y são **inteiros ordinários** (parte imaginária nula). Todos os passos são exibidos, com verificações automáticas.
+
+🔗 **Acesse online:** <https://lbemm3.github.io/equacoes-diofantinas/>
 
 Os algoritmos seguem o artigo *Equações Diofantinas sobre Domínios Euclidianos* (REMAT, IFRS, 2021), originalmente implementados em planilhas LibreOffice (Algoritmos 6.1 a 6.4) e aqui portados para JavaScript puro:
 
@@ -50,7 +52,7 @@ Os algoritmos seguem o artigo *Equações Diofantinas sobre Domínios Euclidiano
 
 ## Como usar
 
-1. Abra o arquivo `diofantina_html.html` no navegador (ou acesse a página publicada).
+1. Abra o arquivo `diofantina_html.html` no navegador (ou acesse a [página publicada](https://lbemm3.github.io/equacoes-diofantinas/)).
 2. Informe a parte real e a parte imaginária de cada número nos campos de entrada. Os resultados são recalculados a cada alteração.
 3. Navegue pelas abas para ver o MDC, a equação, a divisão ou a metodologia.
 4. Ative **📖 Modo Explicado** para ver a teoria por trás de cada passo.
@@ -245,7 +247,7 @@ python3 -m http.server 8000
 1. No repositório, vá em **Settings → Pages**.
 2. Em *Build and deployment*, selecione **Deploy from a branch** e escolha a branch principal e a pasta `/ (root)`.
 3. Para a página abrir direto na raiz do endereço, renomeie (ou copie) o arquivo para `index.html`.
-4. O simulador ficará disponível em `https://lbemm3.github.io/equacoes-diofantinas/`.
+4. O simulador ficará disponível em <https://lbemm3.github.io/equacoes-diofantinas/>.
 
 ## Referência
 
